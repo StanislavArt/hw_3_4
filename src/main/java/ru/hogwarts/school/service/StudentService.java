@@ -39,7 +39,20 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Collection<Student> findByAge(int age) {
-        return studentRepository.findByAge(age);
+    public Collection<Student> getStudentsByAge(int minAge, int maxAge) {
+        if (minAge <= 0) {
+            throw new RuntimeException("Возраст должен быть положительным");
+        }
+        if (maxAge == -1 || minAge == maxAge) {
+            return studentRepository.findByAge(minAge);
+        }
+        if (minAge >= maxAge) {
+            throw new RuntimeException("Диапазон возрастов задан неверно");
+        }
+        return studentRepository.findByAgeBetween(minAge, maxAge);
+    }
+
+    public Faculty getFacultyByStudent(Long studentId) {
+        return get(studentId).getFaculty();
     }
 }
