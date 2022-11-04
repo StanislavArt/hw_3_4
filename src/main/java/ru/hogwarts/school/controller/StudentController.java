@@ -3,6 +3,7 @@ package ru.hogwarts.school.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -55,8 +56,21 @@ public class StudentController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     *
+     * @param minAge  минимальный возраст (обязательный параметр)
+     * @param maxAge  максимальный возраст (необязательный параметр)
+     * @return коллекция студентов, попадающих по возрасту в заданный интервал.
+     * Если параметр 'maxAge' не задан, то возвратится коллекция студентов,
+     * возраст которых соответствует параметру 'minAge'.
+     */
     @GetMapping("filter")
-    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam int age) {
-        return ResponseEntity.ok(studentService.findByAge(age));
+    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam int minAge, @RequestParam(required = false, defaultValue = "-1") int maxAge) {
+        return ResponseEntity.ok(studentService.getStudentsByAge(minAge, maxAge));
+    }
+
+    @GetMapping("{id}/faculty")
+    public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getFacultyByStudent(id));
     }
 }
